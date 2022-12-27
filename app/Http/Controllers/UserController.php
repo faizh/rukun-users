@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Users;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
@@ -36,7 +37,7 @@ class UserController extends Controller
         $user->phone_number = $input->phone_number;
         $user->role_id      = $input->role_id;
         $user->email        = $input->email;
-        $user->password     = $input->password;
+        $user->password     = Hash::make($input->password);
 
         if ($user->save()) {
             $msg    = "Insert Success";
@@ -85,7 +86,7 @@ class UserController extends Controller
         $user->phone_number = $input->phone_number;
         $user->role_id      = $input->role_id;
         $user->email        = $input->email;
-        $user->password     = $input->password;
+        $user->password     = Hash::make($input->password);
         
         if ($user->save()) {
             $msg    = "Update Success";
