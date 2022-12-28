@@ -11,10 +11,12 @@ window.Vue = require('vue').default;
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import Vue from 'vue';
 import router from "./router";
+import axios from 'axios';
 
 // Import Bootstrap and BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VueAxios from 'vue-axios';
 
 
 /**
@@ -35,6 +37,10 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('navbar-component', require('./components/Navbar.vue').default);
 Vue.component('app-vue', require('./App.vue').default)
 Vue.component('hello-component', require('./components/CardHello.vue').default)
+
+Vue.use(VueAxios, axios)
+
+// Vue.prototype.$http = axios
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

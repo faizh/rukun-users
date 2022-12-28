@@ -76,7 +76,7 @@
               <b-input-group>
                 <b-form-input
                   :disabled="!updates.phoneNumber"
-                  v-model="users.phoneNumber"
+                  v-model="users.phone_number"
                 ></b-form-input>
               </b-input-group>
             </td>
@@ -167,10 +167,10 @@ export default {
   data() {
     return {
       users: {
-        name: "Faiz Hermawan",
-        email: "faizhermawan13@gmail.com",
-        phoneNumber: 85247914964,
-        address: "Tomang, Jakarta Barat",
+        name: "",
+        email: "",
+        phone_number: 0,
+        address: "",
       },
       updates: {
         name: false,
@@ -184,18 +184,34 @@ export default {
   methods: {
     setUpdateName(bool) {
       this.updates.name = bool;
+      
+      if(!this.updates.name) {
+        this.updateData()
+      }
     },
 
     setUpdateEmail(bool) {
       this.updates.email = bool;
+
+      if(!this.updates.email) {
+        this.updateData()
+      }
     },
 
     setUpdatePhoneNumber(bool) {
       this.updates.phoneNumber = bool;
+
+      if(!this.updates.phoneNumber) {
+        this.updateData()
+      }
     },
 
     setUpdateAddress(bool) {
       this.updates.address = bool;
+
+      if(!this.updates.address) {
+        this.updateData()
+      }
     },
 
     setUpdateAll() {
@@ -203,7 +219,26 @@ export default {
       this.updates.email = false;
       this.updates.phoneNumber = false;
       this.updates.address = false;
+
+      this.updateData()
     },
+
+    async asyncData() {
+      const api = "http://127.0.0.1:8000/api/users/2";
+      this.axios.get(api).then((response) => {
+        this.users = response.data;
+      });
+    },
+
+    updateData() {const api = "http://127.0.0.1:8000/api/users/2";
+      this.axios.put(api, this.users).then((response) => {
+        console.log(response);
+      });
+    },
+  },
+
+  mounted() {
+    this.asyncData();
   },
 };
 </script>
