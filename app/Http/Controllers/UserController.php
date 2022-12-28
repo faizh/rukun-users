@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -16,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = Users::all();
+        $users = User::all();
 
         return response()->json($users, 200);
     }
@@ -29,7 +31,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user   = new Users;
+        $user   = new User;
         $input  = (object) $request->input();
 
         $user->name         = $input->name;
@@ -63,7 +65,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $users = Users::find($id);
+        $users = User::find($id);
 
         return response()->json($users, 200);
     }
@@ -77,7 +79,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
 
         $input = (object) $request->input();
 
@@ -112,7 +114,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
 
         if ($user->delete()) {
             $msg    = "Delete Success";
@@ -127,5 +129,32 @@ class UserController extends Controller
         ];
         
         return response()->json($data, $code);
+    }
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password'  => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $msg = array(
+                'status'    => false,
+                'messages'  => $validator->errors(),
+            );
+
+            return response($msg, 400);
+        }
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password]))
+        {
+            $msg = array(
+                'status'    => true,
+                'messages'  => "Sukses",
+            );
+
+            return response($msg, 200);
+        }
     }
 }
