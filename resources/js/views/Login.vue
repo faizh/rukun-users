@@ -166,7 +166,7 @@ export default {
 
                     router.push({name: 'home'})
                   }else{
-                    console.log(response.data.messages)
+                    alert(response.data.messages)
                   }
               })
         },
