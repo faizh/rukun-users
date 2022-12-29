@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <navbar-component />
+    <navbar-component :name="users.name" />
     <div class="row mb-5">
       <div class="col-md-6 order-first">
         <div class="d-flex align-items-center h-100">
           <div class="container">
             <h2 class="text-welcome">
-              Hi, <strong>Faiz</strong><br/>
+              Hi, <strong>{{ users.name }}</strong><br/>
               Welcome to
               <span class="color-primary"><strong>RoeKoen</strong></span>
             </h2>
@@ -41,3 +41,37 @@
   color: #69ca99;
 }
 </style>
+
+<script>
+import router from "../router";
+
+export default {
+  data() {
+        return {
+            users: {
+                id: null,
+                name: ''
+            }
+        }
+    },
+
+  mounted() {
+        const token = localStorage.token
+        this.users.id = localStorage.userID
+
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
+        const api = "http://127.0.0.1:8000/api/users/" + this.users.id;
+        this.axios.get(api, config).then((response) => {
+            this.users.id = response.data.id
+            this.users.name = response.data.name
+        }).catch(function(error){
+          if (error.response.status == 401) {
+              router.push({name: 'login'})
+          }
+        });
+    }
+}
+</script>
