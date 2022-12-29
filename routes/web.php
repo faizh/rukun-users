@@ -21,6 +21,9 @@ Route::get('{any}', function () {
     return view('app');
 });
 
-// Route::get('/users', function() {
-//     return view('app');
-// });
+Route::get('/login', function() {
+    return response([
+        'status' => false,
+        'message'   => 'Unauthorized'
+    ], 500);
+})->name('login');
