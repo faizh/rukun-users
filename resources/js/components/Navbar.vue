@@ -13,10 +13,11 @@
           <b-nav-item-dropdown>
             <!-- Using 'button-content' slot -->
             <template #button-content>
-              {{ name }}
+              {{ users.name }}
             </template>
             <div class="container">
-              <b-button variant="info" size="sm">Administrator</b-button>
+              <span>{{ (users.role_id == 1) ? 'Administrator' : 'User' }}</span>
+              <br />
               <b-button variant="outline-danger" size="sm" class="mt-1" @click="logout"
                 >Sign Out</b-button
               >
@@ -51,7 +52,7 @@ a {
 import router from "../router";
 
 export default {
-    props: ["name"],
+    props: ["users"],
 
     methods: {
         logout() {

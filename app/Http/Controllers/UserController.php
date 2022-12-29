@@ -127,7 +127,8 @@ class UserController extends Controller
         }
 
         $data = [
-            'msg'   => $msg
+            'status'     => true,
+            'messages'   => $msg
         ];
         
         return response()->json($data, $code);

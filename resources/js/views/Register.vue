@@ -200,7 +200,7 @@ import router from "../router";
                   phone_number: 0,
                   address: "",
                   password: "",
-                  role_id: 1
+                  role_id: 2
               }
           }
       },

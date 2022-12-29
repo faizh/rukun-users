@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <navbar-component :name="users.name" />
+    <navbar-component :users="userLoggedIn" />
     <div class="text-center">
       <h4>Here is Your Data</h4>
     </div>
@@ -170,6 +170,13 @@ export default {
     return {
       token: "",
       userID: "",
+      userLoggedIn: {
+        name: "",
+        email: "",
+        phone_number: 0,
+        address: "",
+        password: "",
+      },
       users: {
         name: "",
         email: "",
@@ -232,15 +239,32 @@ export default {
       this.token = localStorage.token;
       this.userID = localStorage.userID;
 
+      if (this.$route.params.id != null) {
+        this.userID = this.$route.params.id
+      }
+
       const config = {
         headers: { Authorization: `Bearer ${this.token}` },
       };
 
-      const api = "http://127.0.0.1:8000/api/users/" + this.userID;
+      const apiEditUser = "http://127.0.0.1:8000/api/users/" + this.userID;
+      const apiUserLoggedIn = "http://127.0.0.1:8000/api/users/" + localStorage.userID;
+
       this.axios
-        .get(api, config)
+        .get(apiEditUser, config)
         .then((response) => {
           this.users = response.data;
+        })
+        .catch(function (error) {
+          if (error.response.status == 401) {
+            router.push({ name: "login" });
+          }
+        });
+
+        this.axios
+        .get(apiUserLoggedIn, config)
+        .then((response) => {
+          this.userLoggedIn = response.data;
         })
         .catch(function (error) {
           if (error.response.status == 401) {

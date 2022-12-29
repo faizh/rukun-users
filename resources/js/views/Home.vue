@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <navbar-component :name="users.name" />
+    <navbar-component :users="users" />
     <div class="row mb-5">
       <div class="col-md-6 order-first">
         <div class="d-flex align-items-center h-100">
@@ -13,8 +13,9 @@
             <p class="motto text-align-justify">
               Your Personal Assistance to Managing Users Data!
             </p>
-            <router-link class="btn btn-primary" to="/details">Manage here</router-link
+            <router-link class="btn btn-primary" to="/details">Manage your data</router-link
             >
+            <router-link class="btn btn-primary" to="/all_users" v-if="users.role_id == 1">Manage all data</router-link>
           </div>
         </div>
       </div>
@@ -50,7 +51,8 @@ export default {
         return {
             users: {
                 id: null,
-                name: ''
+                name: '',
+                role_id: ''
             }
         }
     },
@@ -67,6 +69,7 @@ export default {
         this.axios.get(api, config).then((response) => {
             this.users.id = response.data.id
             this.users.name = response.data.name
+            this.users.role_id = response.data.role_id
         }).catch(function(error){
           if (error.response.status == 401) {
               router.push({name: 'login'})
