@@ -19,9 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', [UserController::class, 'index']);
-Route::get('/users/{id}', [UserController::class, 'show']);
+Route::get('/users', [UserController::class, 'index'])->middleware('auth:api');
+Route::get('/users/{id}', [UserController::class, 'show'])->middleware('auth:api');
 Route::post('/users', [UserController::class, 'store']);
-Route::put('/users/{id}', [UserController::class, 'update']);
-Route::delete('/users/{id}', [UserController::class, 'destroy']);
+Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth:api');
+Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('auth:api');
 Route::post('/login', [UserController::class, 'login']);
