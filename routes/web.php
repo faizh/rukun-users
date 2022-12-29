@@ -17,13 +17,13 @@ Route::get('/', function () {
     return view('app');
 });
 
+Route::get('login', function() {
+    return response([
+        'status' => false,
+        'message'   => 'unauthorized'
+    ], 200);
+})->name('login');
+
 Route::get('{any}', function () {
     return view('app');
 });
-
-Route::get('/login', function() {
-    return response([
-        'status' => false,
-        'message'   => 'Unauthorized'
-    ], 500);
-})->name('login');

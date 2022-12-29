@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <navbar-component />
+    <navbar-component :users="userLoggedIn" />
     <div class="text-center">
       <h4>Here is Your Data</h4>
     </div>
@@ -163,14 +163,26 @@ table {
 </style>
 
 <script>
+import router from "../router";
+
 export default {
   data() {
     return {
+      token: "",
+      userID: "",
+      userLoggedIn: {
+        name: "",
+        email: "",
+        phone_number: 0,
+        address: "",
+        password: "",
+      },
       users: {
         name: "",
         email: "",
         phone_number: 0,
         address: "",
+        password: "",
       },
       updates: {
         name: false,
@@ -184,33 +196,33 @@ export default {
   methods: {
     setUpdateName(bool) {
       this.updates.name = bool;
-      
-      if(!this.updates.name) {
-        this.updateData()
+
+      if (!this.updates.name) {
+        this.updateData();
       }
     },
 
     setUpdateEmail(bool) {
       this.updates.email = bool;
 
-      if(!this.updates.email) {
-        this.updateData()
+      if (!this.updates.email) {
+        this.updateData();
       }
     },
 
     setUpdatePhoneNumber(bool) {
       this.updates.phoneNumber = bool;
 
-      if(!this.updates.phoneNumber) {
-        this.updateData()
+      if (!this.updates.phoneNumber) {
+        this.updateData();
       }
     },
 
     setUpdateAddress(bool) {
       this.updates.address = bool;
 
-      if(!this.updates.address) {
-        this.updateData()
+      if (!this.updates.address) {
+        this.updateData();
       }
     },
 
@@ -220,18 +232,54 @@ export default {
       this.updates.phoneNumber = false;
       this.updates.address = false;
 
-      this.updateData()
+      this.updateData();
     },
 
     async asyncData() {
-      const api = "http://127.0.0.1:8000/api/users/2";
-      this.axios.get(api).then((response) => {
-        this.users = response.data;
-      });
+      this.token = localStorage.token;
+      this.userID = localStorage.userID;
+
+      if (this.$route.params.id != null) {
+        this.userID = this.$route.params.id
+      }
+
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` },
+      };
+
+      const apiEditUser = "http://127.0.0.1:8000/api/users/" + this.userID;
+      const apiUserLoggedIn = "http://127.0.0.1:8000/api/users/" + localStorage.userID;
+
+      this.axios
+        .get(apiEditUser, config)
+        .then((response) => {
+          this.users = response.data;
+        })
+        .catch(function (error) {
+          if (error.response.status == 401) {
+            router.push({ name: "login" });
+          }
+        });
+
+        this.axios
+        .get(apiUserLoggedIn, config)
+        .then((response) => {
+          this.userLoggedIn = response.data;
+        })
+        .catch(function (error) {
+          if (error.response.status == 401) {
+            router.push({ name: "login" });
+          }
+        });
     },
 
-    updateData() {const api = "http://127.0.0.1:8000/api/users/2";
-      this.axios.put(api, this.users).then((response) => {
+    updateData() {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` },
+      };
+
+      const api = "http://127.0.0.1:8000/api/users/" + this.userID;
+      this.axios.put(api, this.users, config).then((response) => {
         console.log(response);
       });
     },

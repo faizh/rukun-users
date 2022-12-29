@@ -42,14 +42,17 @@ class UserController extends Controller
         $user->password     = Hash::make($input->password);
 
         if ($user->save()) {
+            $status = true;
             $msg    = "Insert Success";
             $code   = 200;
         } else {
+            $status = false;
             $msg    = "Insert failed";
             $code   = 500;
         }
 
         $data = [
+            'status'    => $status,
             'msg'   => $msg,
             'data'  => $user
         ];
@@ -88,7 +91,6 @@ class UserController extends Controller
         $user->phone_number = $input->phone_number;
         $user->role_id      = $input->role_id;
         $user->email        = $input->email;
-        $user->password     = Hash::make($input->password);
         
         if ($user->save()) {
             $msg    = "Update Success";
@@ -125,7 +127,8 @@ class UserController extends Controller
         }
 
         $data = [
-            'msg'   => $msg
+            'status'     => true,
+            'messages'   => $msg
         ];
         
         return response()->json($data, $code);
@@ -145,19 +148,40 @@ class UserController extends Controller
             );
 
             return response($msg, 400);
-        }
+        }            
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password]))
         {
             $user = Auth::user();
+
             $token = $user->createToken('rukun')->accessToken;
             $msg = array(
                 'status'    => true,
                 'messages'  => "Sukses",
-                'token'      => $token
+                'token'     => $token,
+                'data'      => $user
             );
 
             return response($msg, 200);
+        }else{
+            $msg = array(
+                'status'    => false,
+                'messages'  => 'Authentication failed'
+            );
+
+            return response($msg);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        $token = $request->user()->token();
+
+        if ($token->revoke()) {
+            return response()->json([
+                'status'    => true,
+                'message'   => "Logout success"
+            ], 200);
         }
     }
 }

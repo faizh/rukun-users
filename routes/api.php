@@ -24,4 +24,5 @@ Route::get('/users/{id}', [UserController::class, 'show'])->middleware('auth:api
 Route::post('/users', [UserController::class, 'store']);
 Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth:api');
 Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('auth:api');
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:api');
 Route::post('/login', [UserController::class, 'login']);

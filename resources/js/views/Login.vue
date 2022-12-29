@@ -13,7 +13,7 @@
           <h3 class="color-primary text-center mb-3 mt-4">RoeKoen</h3>
           
           <!-- SIGN IN -->
-          <form v-if="isLoginPage" @submit="onSubmitLogin">
+          <form @submit="onSubmitLogin">
             <div
               class="
                 d-flex
@@ -33,6 +33,7 @@
                 id="form3Example3"
                 class="form-control form-control"
                 placeholder="Enter a valid email address"
+                v-model="users.email"
               />
             </div>
 
@@ -44,12 +45,13 @@
                 id="form3Example4"
                 class="form-control form-control"
                 placeholder="Enter password"
+                v-model="users.password"
               />
             </div>
 
             <div class="text-center text-lg-start mt-4 pt-2">
               <button
-                type="button"
+                type="submit"
                 class="btn btn-primary"
                 style="padding-left: 2.5rem; padding-right: 2.5rem"
               >
@@ -57,100 +59,11 @@
               </button>
               <p class="small fw-bold mt-2 pt-1 mb-0">
                 Don't have an account?
-                <a href="#" @click="setLogin(false)" class="link-danger">Sign Up here</a>
+                <router-link to="/register">Sign Up here</router-link>
               </p>
             </div>
           </form>
 
-
-          <!-- SIGN UP -->
-          <form v-if="!isLoginPage" @submit="onSubmitSignUp">
-            <div
-              class="
-                d-flex
-                flex-row
-                align-items-center
-                justify-content-center justify-content-lg-start
-              "
-            ></div>
-
-            <!-- Name input -->
-            <div class="form-outline mb-2">
-              <label class="form-label" for="form3Example3"
-                >Fullname</label
-              >
-              <input
-                type="text"
-                id="form3Example3"
-                class="form-control form-control"
-                placeholder="Enter your fullname"
-              />
-            </div>
-
-            <!-- Email input -->
-            <div class="form-outline mb-2">
-              <label class="form-label" for="form3Example3"
-                >Email address</label
-              >
-              <input
-                type="email"
-                id="form3Example3"
-                class="form-control form-control"
-                placeholder="Enter a valid email address"
-              />
-            </div>
-
-            <!-- Phone number input -->
-            <div class="form-outline mb-2">
-              <label class="form-label" for="form3Example3"
-                >Phone number</label
-              >
-              <input
-                type="number"
-                id="form3Example3"
-                class="form-control form-control"
-                placeholder="Enter a valid phone number"
-              />
-            </div>
-
-            <!-- Phone number input -->
-            <div class="form-outline mb-2">
-              <label class="form-label" for="form3Example3"
-                >Address</label
-              >
-              <b-form-textarea
-                id="textarea-small"
-                placeholder="Enter your address"
-                name="address"
-            ></b-form-textarea>
-            </div>
-           
-
-            <!-- Password input -->
-            <div class="form-outline mb-3">
-              <label class="form-label" for="form3Example4">Password</label>
-              <input
-                type="password"
-                id="form3Example4"
-                class="form-control form-control"
-                placeholder="Enter password"
-              />
-            </div>
-
-            <div class="text-center text-lg-start mt-4 pt-2">
-              <button
-                type="button"
-                class="btn btn-primary"
-                style="padding-left: 2.5rem; padding-right: 2.5rem"
-              >
-                Sign Up
-              </button>
-              <p class="small fw-bold mt-2 pt-1 mb-0">
-                Already have an account?
-                <a href="#" @click="setLogin(true)" class="link-danger">Sign Up here</a>
-              </p>
-            </div>
-          </form>
         </div>
       </div>
     </div>
@@ -167,7 +80,7 @@
     >
       <!-- Copyright -->
       <div class="mb-md-0">
-        Copyright © 2020. All rights reserved.
+        Copyright © 2022. All rights reserved.
       </div>
       <!-- Copyright -->
 
@@ -192,6 +105,10 @@
 </template>
 
 <style scoped>
+
+.color-primary {
+    color: #69ca99;
+}
 
 .bg-primary {
   background-color: #69ca99;
@@ -225,26 +142,34 @@
 </style>
 
 <script>
+import router from "../router";
+
 export default {
     data() {
         return {
-            isLoginPage: true
+            isLoginPage: true,
+            users: {
+                email: "",
+                password: "",
+            }
         }
     },
 
     methods: {
-        setLogin(isLogin){
-            console.log("asdasd");
-            this.isLoginPage = isLogin
-        },
-
         onSubmitLogin(event) {
             event.preventDefault()
-        },
+            const api = "http://127.0.0.1:8000/api/login"
+              this.axios.post(api, this.users).then((response) => {
+                  if(response.data.status == true){
+                    localStorage.setItem('userID', response.data.data.id)
+                    localStorage.setItem('token', response.data.token)
 
-        onSubmitSignUp(event) {
-            event.preventDefault()
-        }
+                    router.push({name: 'home'})
+                  }else{
+                    alert(response.data.messages)
+                  }
+              })
+        },
     }
 }
 </script>
